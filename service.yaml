@@ -1,0 +1,36 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: cloudops-agent
+  labels:
+    app: cloudops-agent
+    env: prod
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/cpu-throttling: "false"   # 等價於 --cpu-boost（盡量維持 CPU 不被 throttle）
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "10"
+        run.googleapis.com/ingress: all
+    spec:
+      serviceAccountName: cloudrun-runtime@gmailn8n-471501.iam.gserviceaccount.com
+      containerConcurrency: 20
+      timeoutSeconds: 300
+      containers:
+        - image: us-central1-docker.pkg.dev/gmailn8n-471501/cloudops/cloudops-agent:v1
+          ports:
+            - containerPort: 8000
+          env:
+            - name: WORKSPACE_ROOT
+              value: "/app"
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gemini-api-key
+                  key: latest
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"

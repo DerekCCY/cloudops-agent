@@ -1,0 +1,9 @@
+{
+  "id": "010_hello_cloud_tool",
+  "desc": "smoke test",
+  "request": { "text": "Project Name: CloudOps Agent. Call hello_cloud_tool，and return tool name and result。" },
+  "assert": {
+    "must_contain": ["hello_cloud_tool"],
+    "must_not_contain": ["Traceback", "Exception"]
+  }
+}

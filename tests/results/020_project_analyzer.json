@@ -1,0 +1,29 @@
+{
+  "case_id": "020_project_analyzer",
+  "status": 200,
+  "elapsed_sec": 2.094,
+  "response": {
+    "output": "專案分析結果：\n\n偵測到的入口檔： `app/main.py`\n啟動方式： `uvicorn app.main:app --host 0.0.0.0 --port 8000`\n未偵測到需要的環境變數。",
+    "tool_used": [
+      {
+        "name": "project_analyzer",
+        "output": {
+          "repo_path": "/Users/ccy/Documents/CMU/Side projects/cloudOps_agent",
+          "language": "python",
+          "framework": "fastapi",
+          "entrypoint": "app/main.py",
+          "dependencies_file": "requirements.txt",
+          "has_dockerfile": true,
+          "has_compose": false,
+          "signals": {
+            "fastapi_marker": true
+          },
+          "runtime_hints": {
+            "port": 8000,
+            "start_command": "uvicorn app.main:app --host 0.0.0.0 --port 8000"
+          }
+        }
+      }
+    ]
+  }
+}

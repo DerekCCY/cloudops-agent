@@ -1,0 +1,45 @@
+{
+  "case_id": "040_cloudrun_review_service_yaml",
+  "status": 200,
+  "elapsed_sec": 2.743,
+  "response": {
+    "output": "### Cloud Run Review (${SERVICE_NAME})\n\n**Decision:** `GO`\n\n**Summary:** HIGH: 0, MEDIUM: 2, LOW: 2, INFO: 1\n\n#### Top risks\n- **MEDIUM YAML040** — containerConcurrency is 80 (may hurt LLM/CPU-bound latency).\n  - Fix: Consider 5–20 for CPU/LLM workloads; benchmark and tune.\n- **MEDIUM YAML071** — No Secret Manager references found in env.\n  - Fix: If you use API keys, reference Secret Manager via env.valueFrom.secretKeyRef.\n- **LOW YAML001** — Missing recommended labels (app/env).\n  - Fix: Add metadata.labels.app and metadata.labels.env for ops/billing filtering.\n\nThe Cloud Run `service.yaml` has been reviewed. The decision is `GO`, with some MEDIUM and LOW severity risks identified. The report has also been saved to `/Users/ccy/Documents/CMU/Side projects/summary/cloudrun_review_20251223_155542.md`.\n\nWould you like to address any of these identified risks, or would you like to proceed with other actions?",
+    "tool_used": [
+      {
+        "name": "cloudrun_review_report_from_path",
+        "output": {
+          "decision": "GO",
+          "summary": {
+            "HIGH": 0,
+            "MEDIUM": 2,
+            "LOW": 2,
+            "INFO": 1
+          },
+          "top_risks": [
+            {
+              "severity": "MEDIUM",
+              "code": "YAML040",
+              "message": "containerConcurrency is 80 (may hurt LLM/CPU-bound latency).",
+              "recommendation": "Consider 5–20 for CPU/LLM workloads; benchmark and tune."
+            },
+            {
+              "severity": "MEDIUM",
+              "code": "YAML071",
+              "message": "No Secret Manager references found in env.",
+              "recommendation": "If you use API keys, reference Secret Manager via env.valueFrom.secretKeyRef."
+            },
+            {
+              "severity": "LOW",
+              "code": "YAML001",
+              "message": "Missing recommended labels (app/env).",
+              "recommendation": "Add metadata.labels.app and metadata.labels.env for ops/billing filtering."
+            }
+          ],
+          "markdown": "### Cloud Run Review (${SERVICE_NAME})\n\n**Decision:** `GO`\n\n**Summary:** HIGH: 0, MEDIUM: 2, LOW: 2, INFO: 1\n\n#### Top risks\n- **MEDIUM YAML040** — containerConcurrency is 80 (may hurt LLM/CPU-bound latency).\n  - Fix: Consider 5–20 for CPU/LLM workloads; benchmark and tune.\n- **MEDIUM YAML071** — No Secret Manager references found in env.\n  - Fix: If you use API keys, reference Secret Manager via env.valueFrom.secretKeyRef.\n- **LOW YAML001** — Missing recommended labels (app/env).\n  - Fix: Add metadata.labels.app and metadata.labels.env for ops/billing filtering.",
+          "saved_path": "/Users/ccy/Documents/CMU/Side projects/summary/cloudrun_review_20251223_155542.md",
+          "source_path": "/Users/ccy/Documents/CMU/Side projects/cloudOps_agent/deploy/service.yaml"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "case_id": "010_hello_cloud_tool",
+  "status": 200,
+  "elapsed_sec": 1.74,
+  "response": {
+    "output": "The tool `hello_cloud_tool` was called with the project name \"CloudOps Agent\". \nThe tool returned the following result: `{'hello_cloud_tool_response': {'output': 'CloudOps Agent received project: CloudOps Agent'}}`.\n\nHow else can I help?",
+    "tool_used": [
+      {
+        "name": "hello_cloud_tool",
+        "output": {
+          "raw": "CloudOps Agent received project: CloudOps Agent"
+        }
+      }
+    ]
+  }
+}

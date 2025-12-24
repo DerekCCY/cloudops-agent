@@ -1,0 +1,11 @@
+{
+  "id": "020_project_analyzer",
+  "desc": "analyze current repo structure",
+  "request": {
+    "text": "repo: {{REPO_ROOT}}。請先呼叫 project_analyzer，輸出偵測到的入口檔、啟動方式、以及需要的環境變數。"
+  },
+  "assert": {
+    "must_contain": ["project_analyzer", "app/main.py"],
+    "must_not_contain": ["Traceback"]
+  }
+}
