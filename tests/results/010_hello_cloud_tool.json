@@ -1,9 +1,12 @@
 {
   "case_id": "010_hello_cloud_tool",
   "status": 200,
-  "elapsed_sec": 1.74,
+  "elapsed_sec": 1.658,
+  "request": {
+    "text": "Project Name: CloudOps Agent. Call hello_cloud_tool，and return tool name and result。"
+  },
   "response": {
-    "output": "The tool `hello_cloud_tool` was called with the project name \"CloudOps Agent\". \nThe tool returned the following result: `{'hello_cloud_tool_response': {'output': 'CloudOps Agent received project: CloudOps Agent'}}`.\n\nHow else can I help?",
+    "output": "I've called `hello_cloud_tool` for you.\n\n**Tool Name**: `hello_cloud_tool`\n**Result**: `{\"hello_cloud_tool_response\": {\"output\": \"CloudOps Agent received project: CloudOps Agent\"}}`\n\nWhat would you like to do next?",
     "tool_used": [
       {
         "name": "hello_cloud_tool",

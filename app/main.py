@@ -55,8 +55,8 @@ def _extract_tools(messages):
     return tools
 
 
-@app.get("/healthz")
-def healthz():
+@app.get("/health")
+def health():
     return {"ok": True}
 
 @app.post("/generate")

@@ -38,7 +38,7 @@ In `service.yaml`, secrets are referenced like:
       key: latest
 ```
 
-## Day 6: Dry run (no deployment)
+## Dry run (no deployment)
 ```bash
 chmod +x ./cloudrun_deploy.sh
 export PROJECT_ID="YOUR_GCP_PROJECT"
@@ -48,7 +48,7 @@ export DRY_RUN="true"
 ./cloudrun_deploy.sh
 ```
 
-## Day 10: Real deployment
+## Real deployment
 Build + push image first, then:
 ```bash
 export IMAGE="us-docker.pkg.dev/YOUR_GCP_PROJECT/REPO/IMAGE:TAG"

@@ -9,8 +9,11 @@ from langchain_core.tools import tool
 from app.tools.cloudrun_review_formatter import *
 from pathlib import Path
 import json
-from app._paths import pick_workspace_root
+from app.utils import pick_workspace_root
 from datetime import datetime
+from app.runtime import *
+RUN_ENV = get_run_env()
+
 
 
 @dataclass
@@ -339,8 +342,24 @@ class CloudRunReviewPathInput(BaseModel):
     save_summary: bool = Field(True, description="Save markdown report to summary/")
     summary_dir: str = Field("summary", description="Folder name under repo root to save report")
 
-def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[2]
+# ----------------------------
+# Dual-mode guard on file read
+# ----------------------------
+def _safe_read_file(path: str) -> str:
+    """
+    Read a file safely depending on the environment.
+    Cloud Run: allow only /tmp or workspace paths.
+    """
+    p = Path(path).expanduser().resolve()
+    root = pick_workspace_root()
+    try:
+        p.relative_to(root)
+    except ValueError:
+        if RUN_ENV == RunEnv.CLOUDRUN:
+            raise ValueError(f"Cloud Run can only read files under {root}, attempted: {p}")
+    if not p.exists() or not p.is_file():
+        raise ValueError(f"File not found: {p}")
+    return p.read_text(encoding="utf-8", errors="ignore")
 
 def save_md(md: str, summary_dir: str = "summary", prefix: str = "cloudrun_review") -> str:
     root = pick_workspace_root()
@@ -352,23 +371,22 @@ def save_md(md: str, summary_dir: str = "summary", prefix: str = "cloudrun_revie
     p.write_text(md, encoding="utf-8")
     return str(p)
 
-@tool("cloudrun_review_report_from_path", args_schema=CloudRunReviewPathInput)
+@tool("cloudrun_review_report", args_schema=CloudRunReviewPathInput)
 def cloudrun_review_report(path: str, kind: str = "auto", save_summary: bool = True, summary_dir: str = "summary") -> Dict[str, Any]:
     """
     Read a local file (service.yaml or deploy script) and return a formatted Cloud Run review report.
     Also saves the markdown report into summary/ by default.
     """
-    p = Path(path).expanduser().resolve()
-    if not p.exists() or not p.is_file():
-        raise ValueError(f"File not found: {p}")
-
-    text = p.read_text(encoding="utf-8", errors="ignore")
+    text = _safe_read_file(path)
     raw = review_cloudrun_config(text=text, kind=kind)
     report = format_cloudrun_review(raw)
 
     md = report.get("markdown") or report.get("md") or ""
+    if RUN_ENV == RunEnv.CLOUDRUN and save_summary and md:
+        report["saved_path"] = save_md(md, summary_dir= Path("/tmp") / "summary")
     if save_summary and md:
         report["saved_path"] = save_md(md, summary_dir=summary_dir)
 
-    report["source_path"] = str(p)
+    report["source_path"] = path
+    report["env"] = RUN_ENV.value
     return report

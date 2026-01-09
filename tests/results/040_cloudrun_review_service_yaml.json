@@ -1,9 +1,12 @@
 {
   "case_id": "040_cloudrun_review_service_yaml",
   "status": 200,
-  "elapsed_sec": 2.743,
+  "elapsed_sec": 3.432,
+  "request": {
+    "text": "/Users/ccy/Documents/CMU/Side projects/cloudOps_agent 請讀取 deploy/service.yaml（如果沒有就讀 repo 根目錄的 service.yaml），呼叫 cloudrun_review_report(kind=yaml)，直接輸出 tool 回傳的 markdown。"
+  },
   "response": {
-    "output": "### Cloud Run Review (${SERVICE_NAME})\n\n**Decision:** `GO`\n\n**Summary:** HIGH: 0, MEDIUM: 2, LOW: 2, INFO: 1\n\n#### Top risks\n- **MEDIUM YAML040** — containerConcurrency is 80 (may hurt LLM/CPU-bound latency).\n  - Fix: Consider 5–20 for CPU/LLM workloads; benchmark and tune.\n- **MEDIUM YAML071** — No Secret Manager references found in env.\n  - Fix: If you use API keys, reference Secret Manager via env.valueFrom.secretKeyRef.\n- **LOW YAML001** — Missing recommended labels (app/env).\n  - Fix: Add metadata.labels.app and metadata.labels.env for ops/billing filtering.\n\nThe Cloud Run `service.yaml` has been reviewed. The decision is `GO`, with some MEDIUM and LOW severity risks identified. The report has also been saved to `/Users/ccy/Documents/CMU/Side projects/summary/cloudrun_review_20251223_155542.md`.\n\nWould you like to address any of these identified risks, or would you like to proceed with other actions?",
+    "output": "Here's the Cloud Run review report for your `deploy/service.yaml`:\n\n### Cloud Run Review (${SERVICE_NAME})\n\n**Decision:** `GO`\n\n**Summary:** HIGH: 0, MEDIUM: 2, LOW: 2, INFO: 1\n\n#### Top risks\n- **MEDIUM YAML040** — containerConcurrency is 80 (may hurt LLM/CPU-bound latency).\n  - Fix: Consider 5–20 for CPU/LLM workloads; benchmark and tune.\n- **MEDIUM YAML071** — No Secret Manager references found in env.\n  - Fix: If you use API keys, reference Secret Manager via env.valueFrom.secretKeyRef.\n- **LOW YAML001** — Missing recommended labels (app/env).\n  - Fix: Add metadata.labels.app and metadata.labels.env for ops/billing filtering.\n\nThe report has been saved to `/Users/ccy/Documents/CMU/Side projects/summary/cloudrun_review_20251223_222913.md`.\n\nThe report indicates a `GO` decision, but highlights some medium and low-severity risks that you might want to address for better performance, security, and operational visibility.",
     "tool_used": [
       {
         "name": "cloudrun_review_report_from_path",
@@ -36,7 +39,7 @@
             }
           ],
           "markdown": "### Cloud Run Review (${SERVICE_NAME})\n\n**Decision:** `GO`\n\n**Summary:** HIGH: 0, MEDIUM: 2, LOW: 2, INFO: 1\n\n#### Top risks\n- **MEDIUM YAML040** — containerConcurrency is 80 (may hurt LLM/CPU-bound latency).\n  - Fix: Consider 5–20 for CPU/LLM workloads; benchmark and tune.\n- **MEDIUM YAML071** — No Secret Manager references found in env.\n  - Fix: If you use API keys, reference Secret Manager via env.valueFrom.secretKeyRef.\n- **LOW YAML001** — Missing recommended labels (app/env).\n  - Fix: Add metadata.labels.app and metadata.labels.env for ops/billing filtering.",
-          "saved_path": "/Users/ccy/Documents/CMU/Side projects/summary/cloudrun_review_20251223_155542.md",
+          "saved_path": "/Users/ccy/Documents/CMU/Side projects/summary/cloudrun_review_20251223_222913.md",
           "source_path": "/Users/ccy/Documents/CMU/Side projects/cloudOps_agent/deploy/service.yaml"
         }
       }

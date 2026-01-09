@@ -1,11 +1,17 @@
 {
   "id": "020_project_analyzer",
-  "desc": "analyze current repo structure",
   "request": {
-    "text": "repo: {{REPO_ROOT}}。請先呼叫 project_analyzer，輸出偵測到的入口檔、啟動方式、以及需要的環境變數。"
+    "text": "Analyze this repo: {{REPO_ROOT}}. Call project_analyzer first. Return a short summary."
   },
   "assert": {
-    "must_contain": ["project_analyzer", "app/main.py"],
-    "must_not_contain": ["Traceback"]
+    "status": 200,
+    "tool_must_include": ["project_analyzer"],
+    "tool_output_must_have": {
+      "project_analyzer": ["entrypoint", "runtime_hints", "repo_path"]
+    },
+    "tool_output_path_must_exist": {
+      "project_analyzer": ["runtime_hints.port", "runtime_hints.start_command"]
+    },
+    "must_not_contain": ["Traceback", "Internal Server Error"]
   }
 }

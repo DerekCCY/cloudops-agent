@@ -5,7 +5,8 @@
     "text": "{{REPO_ROOT}} 請讀取 deploy/service.yaml（如果沒有就讀 repo 根目錄的 service.yaml），呼叫 cloudrun_review_report(kind=yaml)，直接輸出 tool 回傳的 markdown。"
   },
   "assert": {
-    "must_contain": ["cloudrun_review_report"],
+    "status": 200,
+    "tool_must_include":["cloudrun_review_report_from_path"],
     "must_not_contain": ["Traceback", "FileNotFoundError"]
   }
 }

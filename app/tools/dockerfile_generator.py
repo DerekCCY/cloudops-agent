@@ -5,7 +5,9 @@ from pathlib import Path
 from typing import Dict, Any
 
 from langchain_core.tools import tool
+from app.runtime import *
 
+RUN_ENV = get_run_env()
 
 def _safe_repo_path(repo_path: str) -> Path:
     repo = Path(repo_path).expanduser().resolve() # Turn to clean absolute path
@@ -87,12 +89,12 @@ def dockerfile_generator(repo_path: str, analysis: Dict[str, Any], overwrite: bo
     Generate a Dockerfile from analyzer output and write it into the repo.
 
     Inputs:
-      repo_path: repo directory (must be under WORKSPACE_ROOT if set)
-      analysis: analyzer JSON dict
-      overwrite: whether to overwrite existing Dockerfile
+        repo_path: repo directory (must be under WORKSPACE_ROOT if set)
+        analysis: analyzer JSON dict
+        overwrite: whether to overwrite existing Dockerfile
 
     Output:
-      dict with dockerfile_path and dockerfile_preview
+        dict with dockerfile_path and dockerfile_preview
     """
     repo = _safe_repo_path(repo_path)
     dockerfile_path = repo / "Dockerfile"
@@ -100,15 +102,20 @@ def dockerfile_generator(repo_path: str, analysis: Dict[str, Any], overwrite: bo
     if dockerfile_path.exists() and not overwrite:
         return {
             "status": "skipped",
-            "reason": "Dockerfile already exists (set overwrite=true to replace).",
+            "reason": "Dockerfile exists (set overwrite=True to replace).",
             "dockerfile_path": str(dockerfile_path),
         }
 
     dockerfile = generate_dockerfile_from_analysis(analysis)
+
+    if RUN_ENV == RunEnv.CLOUDRUN:
+        # Cloud Run: cannot write to repo; write to /tmp instead
+        dockerfile_path = Path("/tmp") / "Dockerfile"
     dockerfile_path.write_text(dockerfile, encoding="utf-8")
 
     return {
         "status": "written",
         "dockerfile_path": str(dockerfile_path),
         "dockerfile_preview": dockerfile[:1200],
+        "env": RUN_ENV.value,
     }

@@ -10,6 +10,9 @@ from app.tools.dockerfile_generator import dockerfile_generator
 from app.tools.cloudrun_reviewer import cloudrun_review_report
 from app.tools.cloudrun_config_generator import cloudrun_config_generator_tool
 
+from app.runtime import get_run_env
+env = get_run_env()
+
 load_dotenv()
 
 
@@ -17,10 +20,21 @@ def load_system_prompt() -> str:
     prompt_path = Path(__file__).parent / "prompts" / "system.txt"
     return prompt_path.read_text(encoding="utf-8")
 
-
 def create_agent_graph():
-    system_prompt = load_system_prompt()
+    system_prompt_env = f"""
+        You are running in **{env}** mode.
 
+        Rules:
+        - If running on cloudrun:
+            - DO NOT attempt to read local repositories
+            - DO NOT write files or folders
+            - ALWAYS output generated configs as markdown or structured JSON
+        - If running locally:
+            - You may read repo files
+            - You may write generated files to disk
+        """
+    system_prompt = system_prompt_env + load_system_prompt()
+    
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.5-flash",
         temperature=0,

@@ -1,11 +1,12 @@
 {
   "id": "030_dockerfile_generator",
-  "desc": "generate dockerfile suggestion",
   "request": {
-    "text": "{{REPO_ROOT}} 請呼叫 dockerfile_generator，針對這個 repo（FastAPI/uvicorn）生成適合 Cloud Run 的 Dockerfile，並說明 PORT 設定。"
+    "text": "For repo {{REPO_ROOT}}, generate a Cloud Run compatible Dockerfile. Use tools as needed. Include PORT handling."
   },
   "assert": {
-    "must_contain": ["dockerfile_generator", "PORT", "uvicorn"],
-    "must_not_contain": ["Traceback"]
+    "status": 200,
+    "tool_must_include": ["dockerfile_generator"],
+    "must_contain": ["PORT", "uvicorn", "Dockerfile"],
+    "must_not_contain": ["Traceback", "Internal Server Error"]
   }
 }

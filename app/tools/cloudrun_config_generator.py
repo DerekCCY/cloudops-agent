@@ -6,7 +6,8 @@ from typing import Any, Dict, Optional
 import re
 import textwrap
 from langchain_core.tools import tool
-from app._paths import pick_workspace_root
+from app.utils import pick_workspace_root
+from app.utils import RunEnv, get_run_env
 
 try:
     import yaml  # PyYAML
@@ -306,7 +307,7 @@ def generate_readme_md(config: CloudRunConfig) -> str:
               key: latest
         ```
 
-        ## Day 6: Dry run (no deployment)
+        ## Dry run (no deployment)
         ```bash
         chmod +x ./cloudrun_deploy.sh
         export PROJECT_ID="YOUR_GCP_PROJECT"
@@ -316,7 +317,7 @@ def generate_readme_md(config: CloudRunConfig) -> str:
         ./cloudrun_deploy.sh
         ```
 
-        ## Day 10: Real deployment
+        ## Real deployment
         Build + push image first, then:
         ```bash
         export IMAGE="us-docker.pkg.dev/YOUR_GCP_PROJECT/REPO/IMAGE:TAG"
@@ -379,9 +380,15 @@ def _repo_root() -> Path:
     # 以 app/tools/.. 往上兩層回到 repo root
     return Path(__file__).resolve().parents[2]
 
-def write_templates(files: dict[str, str], output_dir: str = "deploy") -> dict[str, str]:
+RUN_ENV = get_run_env()
+
+def write_templates(files: Dict[str, str], output_dir: str = "deploy") -> Dict[str, str]:
     root = pick_workspace_root()
     out = (root / output_dir).resolve()
+
+    if RUN_ENV == RunEnv.CLOUDRUN:
+        # In Cloud Run, write only to /tmp
+        out = Path("/tmp") / output_dir
     out.mkdir(parents=True, exist_ok=True)
 
     written = {}
@@ -394,13 +401,16 @@ def write_templates(files: dict[str, str], output_dir: str = "deploy") -> dict[s
 
 @tool
 def cloudrun_config_generator_tool(input_json: Dict[str, Any]) -> Dict[str, Any]:
-    """Generate Cloud Run config templates (service.yaml, cloudrun_deploy.sh, README) without secrets."""
+    """Generate Cloud Run config templates (service.yaml, cloudrun_deploy.sh, README)."""
     files = generate_cloudrun_templates(input_json)
 
     output_dir = (input_json.get("output_dir") or "deploy").strip().strip("/")
     write_files = bool(input_json.get("write_files", True))
 
     written = {}
+    if RUN_ENV == RunEnv.CLOUDRUN and write_files:
+        # Cloud Run: cannot write to repo; write to /tmp instead
+        written = write_templates(files, output_dir=Path("/tmp") / "deploy")
     if write_files:
         written = write_templates(files, output_dir=output_dir)
 
@@ -408,8 +418,8 @@ def cloudrun_config_generator_tool(input_json: Dict[str, Any]) -> Dict[str, Any]
         "files": files,
         "written_paths": written,
         "notes": (
-            f"Day 6 generated Cloud Run config templates (no secrets). "
-            f"Saved to ./{output_dir} (write_files={write_files}). "
-            "Use DRY_RUN=true for validation. Day 10 will build+push IMAGE then deploy."
+            f"Generated Cloud Run config templates (no secrets). "
+            f"Saved to {RUN_ENV.value}/{output_dir} (write_files={write_files}). "
+            "Use DRY_RUN=true for validation. You will build+push IMAGE then deploy."
         ),
     }

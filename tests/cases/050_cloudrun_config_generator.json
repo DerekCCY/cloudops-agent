@@ -1,11 +1,12 @@
 {
   "id": "050_cloudrun_config_generator",
-  "desc": "generate service.yaml + deploy script",
   "request": {
-    "text": "repo: {{REPO_ROOT}}。請呼叫 cloudrun_config_generator_tool 產生 Cloud Run 設定模板，產出 service.yaml 與 cloudrun_deploy.sh 的內容（以 markdown code block 顯示）。只做生成，不要真的部署。"
+    "text": "For repo {{REPO_ROOT}}, generate Cloud Run templates (service.yaml and cloudrun_deploy.sh). Do NOT deploy. Use tools as needed."
   },
   "assert": {
-    "must_contain": ["cloudrun_config_generator_tool", "service.yaml", "cloudrun_deploy.sh"],
-    "must_not_contain": ["Traceback"]
+    "status": 200,
+    "tool_must_include": ["cloudrun_config_generator_tool"],
+    "must_contain": ["service.yaml", "cloudrun_deploy.sh"],
+    "must_not_contain": ["Traceback", "Internal Server Error", "I deployed"]
   }
 }

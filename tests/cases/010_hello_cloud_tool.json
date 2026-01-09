@@ -3,6 +3,8 @@
   "desc": "smoke test",
   "request": { "text": "Project Name: CloudOps Agent. Call hello_cloud_tool，and return tool name and result。" },
   "assert": {
+    "status": 200,
+    "tool_must_include": ["hello_cloud_tool"],
     "must_contain": ["hello_cloud_tool"],
     "must_not_contain": ["Traceback", "Exception"]
   }
