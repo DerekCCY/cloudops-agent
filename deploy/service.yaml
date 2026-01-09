@@ -1,7 +1,7 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: ${SERVICE_NAME}
+  name: cloudops-agent-service
   annotations:
     run.googleapis.com/ingress: all
 spec:
@@ -19,7 +19,7 @@ spec:
       - image: ${IMAGE}
         ports:
         - name: http1
-          containerPort: 8000
+          containerPort: 8080
         env:
         - name: WORKSPACE_ROOT
           value: /app

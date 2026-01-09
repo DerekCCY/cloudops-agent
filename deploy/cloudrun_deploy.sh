@@ -8,8 +8,8 @@ set -euo pipefail
 # =====================================
 
 PROJECT_ID="${PROJECT_ID:-}"
-REGION="${REGION:-${REGION}}"
-SERVICE_NAME="${SERVICE_NAME:-${SERVICE_NAME}}"
+REGION="${REGION:-us-central1}"
+SERVICE_NAME="${SERVICE_NAME:-cloudops-agent-service}"
 IMAGE="${IMAGE:-}"  # Day 10 will set this after build+push
 
 SERVICE_YAML="${SERVICE_YAML:-service.yaml}"

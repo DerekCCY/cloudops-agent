@@ -16,8 +16,8 @@ You must provide:
 Example:
 ```bash
 export PROJECT_ID="YOUR_GCP_PROJECT"
-export REGION="${REGION}"
-export SERVICE_NAME="${SERVICE_NAME}"
+export REGION="us-central1"
+export SERVICE_NAME="cloudops-agent-service"
 export IMAGE="us-docker.pkg.dev/YOUR_GCP_PROJECT/REPO/IMAGE:TAG"
 envsubst < service.yaml > /tmp/service.rendered.yaml
 ```
@@ -42,8 +42,8 @@ In `service.yaml`, secrets are referenced like:
 ```bash
 chmod +x ./cloudrun_deploy.sh
 export PROJECT_ID="YOUR_GCP_PROJECT"
-export REGION="${REGION}"
-export SERVICE_NAME="${SERVICE_NAME}"
+export REGION="us-central1"
+export SERVICE_NAME="cloudops-agent-service"
 export DRY_RUN="true"
 ./cloudrun_deploy.sh
 ```

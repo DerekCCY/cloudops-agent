@@ -4,6 +4,8 @@ from fastapi import FastAPI, Query, HTTPException
 from pydantic import BaseModel
 import os
 from app.agents import create_agent_graph
+from app.runtime import *
+from app.utils import *
 
 app = FastAPI()
 
@@ -58,6 +60,16 @@ def _extract_tools(messages):
 @app.get("/health")
 def health():
     return {"ok": True}
+
+@app.get("/debug/runtime")
+def debug_runtime():
+    return {
+        "run_env": get_run_env(),
+        "k_service": os.getenv("K_SERVICE"),
+        "workspace_root": str(pick_workspace_root()),
+        "cwd": os.getcwd(),
+        "can_write_tmp": os.access("/tmp", os.W_OK),
+    }
 
 @app.post("/generate")
 def generate(req: Request, debug: bool = Query(False)):
